@@ -68,7 +68,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u yunuo46 --password-stdin
-            docker pull ghcr.io/yunuo46/ttn:latest
-            docker stop ttn || true
-            docker rm ttn || true
-            docker run -d --name ttn -p 3000:8080 ghcr.io/yunuo46/ttn:latest
+            export MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
+            docker-compose down || true
+            docker-compose up -d
