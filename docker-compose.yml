@@ -12,18 +12,18 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://ttn_db:3306/ttn?useSSL=false&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD:
-      depends_on:
-        -mysql
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    depends_on:
+      - mysql
 
   mysql:
     container_name: ttn_db
     image: mysql:latest
     restart: unless-stopped
     environment:
-      MySQL_USER: root
+      MYSQL_USER: root
       MYSQL_ROOT_HOST: '%'
-      MYSQL_ROOT_PASSWORD:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ttn
     ports:
       - "3306:3306"
