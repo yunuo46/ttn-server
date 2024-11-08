@@ -1,3 +1,7 @@
+networks:
+  app_network:
+    driver: bridge
+
 services:
   app:
     container_name: ttn
