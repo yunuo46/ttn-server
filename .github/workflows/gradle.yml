@@ -61,11 +61,14 @@ jobs:
 
       - name: Deploy to Server via SSH
         uses: appleboy/ssh-action@master
+        env:
+          COMPOSE: "/home/compose/docker-compose.yml"
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
+          envs: COMPOSE
           script: |
             echo ${{ secrets.GHCR_TOKEN }} | docker login ghcr.io -u yunuo46 --password-stdin
             export MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
