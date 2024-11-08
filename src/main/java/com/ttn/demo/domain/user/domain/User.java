@@ -14,8 +14,7 @@ public class User {
     @Column(nullable = false)
     private Long id;
 
-    @Column(name = "nickname")
-    private String nickName;
+    private String nickname;
 
     private String password;
 }

@@ -18,23 +18,23 @@ public class UserService {
 
     public UserResponse createUser(User user) {
         User savedUser = userRepository.save(user);
-        return new UserResponse(savedUser.getId(),savedUser.getNickName());
+        return new UserResponse(savedUser.getId(),savedUser.getNickname());
     }
 
     public UserResponse getUserById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found with id " + id));
-        return new UserResponse(user.getId(), user.getNickName());
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        return new UserResponse(user.getId(), user.getNickname());
     }
 
     public Iterable<UserResponse> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(user -> new UserResponse(user.getId(), user.getNickName()))
+                .map(user -> new UserResponse(user.getId(), user.getNickname()))
                 .collect(Collectors.toList());
     }
 
-    public boolean deleteUser(Long id) {
-        Optional<User> user = userRepository.findById(id);
-        user.ifPresent(userRepository::delete);
-        return user.isPresent();
+    public void deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
+        userRepository.delete(user);
     }
 }
