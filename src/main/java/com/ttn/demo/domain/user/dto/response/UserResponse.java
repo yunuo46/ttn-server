@@ -1,10 +1,12 @@
 package com.ttn.demo.domain.user.dto.response;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public class UserResponse {
     private Long id;
-    private String nickName;
+    private String username;
+    private String language;
 }

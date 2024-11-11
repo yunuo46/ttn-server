@@ -1,10 +1,15 @@
 package com.ttn.demo.domain.user.api;
 
 import com.ttn.demo.domain.user.domain.User;
-import com.ttn.demo.domain.user.dto.response.UserResponse;
 import com.ttn.demo.domain.user.application.UserService;
+import com.ttn.demo.domain.user.dto.Tokens;
+import com.ttn.demo.domain.user.dto.request.UserRequest;
+import com.ttn.demo.domain.user.dto.response.TokenResponse;
+import com.ttn.demo.domain.user.dto.response.UserResponse;
 import com.ttn.demo.global.util.ApiResponse;
 import com.ttn.demo.global.util.ApiUtils;
+import com.ttn.demo.global.util.JwtUtils;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -15,28 +20,31 @@ import org.springframework.web.bind.annotation.*;
 public class UserApi {
     private final UserService userService;
 
-    @PostMapping
+    @PostMapping("/join")
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<UserResponse> createUser(@RequestBody User user) {
-        UserResponse savedUser = userService.createUser(user);
-        return ApiUtils.success(savedUser);
+    public ApiResponse<TokenResponse> join(@RequestBody UserRequest userRequest, HttpServletResponse response) {
+        Tokens tokens = userService.createUser(userRequest);
+        TokenResponse tokenResponseDto = JwtUtils.setJwtResponse(response,tokens);
+        return ApiUtils.success(tokenResponseDto);
     }
 
-    @GetMapping("/{id}")
-    public ApiResponse<UserResponse> getUserById(@PathVariable Long id) {
-        UserResponse user = userService.getUserById(id);
-        return ApiUtils.success(user);
+    @PostMapping("/login")
+    public ApiResponse<TokenResponse> login(@RequestBody UserRequest userRequest, HttpServletResponse response) {
+        Tokens tokens = userService.loginUser(userRequest);
+        TokenResponse tokenResponseDto = JwtUtils.setJwtResponse(response,tokens);
+        return ApiUtils.success(tokenResponseDto);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ApiResponse<Iterable<UserResponse>> getAllUsers() {
         Iterable<UserResponse> users = userService.getAllUsers();
         return ApiUtils.success(users);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping()
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ApiResponse<Void> deleteUser(@PathVariable Long id) {
+    public ApiResponse<Void> deleteUser() {
+        Long id = ApiUtils.getUserIdFromAuthentication();
         userService.deleteUser(id);
         return ApiUtils.success(null);
     }

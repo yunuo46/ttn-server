@@ -28,13 +28,14 @@ public class LetterApi {
         return ApiUtils.success(letter);
     }
 
-    @GetMapping("/{id}")
-    public ApiResponse<Letter> getLetterById(@PathVariable Long id) {
+    @GetMapping()
+    public ApiResponse<Letter> getLetterById() {
+        Long id = ApiUtils.getUserIdFromAuthentication();
         Letter letter = letterService.getLetterById(id);
         return ApiUtils.success(letter);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ApiResponse<List<LetterSummaryResponse>> getAllLetters() {
         List<LetterSummaryResponse> letters = letterService.getAllLetters();
         return ApiUtils.success(letters);

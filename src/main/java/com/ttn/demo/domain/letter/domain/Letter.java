@@ -31,6 +31,8 @@ public class Letter {
     @Column(columnDefinition = "TEXT")
     private String contents;
 
+    private String language;
+
     @Column(name = "sended_at")
     private LocalDateTime sendedAt;
 
