@@ -2,6 +2,7 @@ package com.ttn.demo.domain.letter.api;
 
 import com.ttn.demo.domain.letter.domain.Letter;
 import com.ttn.demo.domain.letter.dto.request.LetterCreateRequest;
+import com.ttn.demo.domain.letter.dto.response.LetterResponse;
 import com.ttn.demo.domain.letter.dto.response.LetterSummaryResponse;
 import com.ttn.demo.domain.letter.application.LetterService;
 import com.ttn.demo.global.util.ApiResponse;
@@ -23,21 +24,30 @@ public class LetterApi {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ApiResponse<Letter> createLetter(@RequestBody LetterCreateRequest letterRequestDTO) {
-        Letter letter = letterService.createLetter(letterRequestDTO);
-        return ApiUtils.success(letter);
-    }
-
-    @GetMapping()
-    public ApiResponse<Letter> getLetterById() {
+    public ApiResponse<Void> createLetter(@RequestBody LetterCreateRequest letterRequestDTO) {
         Long id = ApiUtils.getUserIdFromAuthentication();
-        Letter letter = letterService.getLetterById(id);
-        return ApiUtils.success(letter);
+        letterService.createLetter(id, letterRequestDTO);
+        return ApiUtils.success(null);
     }
 
-    @GetMapping("/all")
-    public ApiResponse<List<LetterSummaryResponse>> getAllLetters() {
-        List<LetterSummaryResponse> letters = letterService.getAllLetters();
+    @GetMapping("/{letterId}")
+    public ApiResponse<LetterResponse> getLetterById(@PathVariable Long letterId) {
+        Long id = ApiUtils.getUserIdFromAuthentication();
+        LetterResponse letterResponse = letterService.getLetterById(id, letterId);
+        return ApiUtils.success(letterResponse);
+    }
+
+    @GetMapping("/sent")
+    public ApiResponse<List<LetterSummaryResponse>> getAllSentLetters() {
+        Long id = ApiUtils.getUserIdFromAuthentication();
+        List<LetterSummaryResponse> letters = letterService.getAllSentLetters(id);
+        return ApiUtils.success(letters);
+    }
+
+    @GetMapping("/received")
+    public ApiResponse<List<LetterSummaryResponse>> getAllReceivedLetters() {
+        Long id = ApiUtils.getUserIdFromAuthentication();
+        List<LetterSummaryResponse> letters = letterService.getAllReceivedLetters(id);
         return ApiUtils.success(letters);
     }
 }

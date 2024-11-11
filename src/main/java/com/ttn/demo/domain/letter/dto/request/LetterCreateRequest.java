@@ -6,7 +6,6 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class LetterCreateRequest {
-    private Long senderId;
     private String title;
     private String contents;
 }

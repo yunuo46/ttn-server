@@ -39,12 +39,13 @@ public class Letter {
     @Column(name = "opened_at")
     private LocalDateTime openedAt;
 
-    public static LetterBuilder of(User sender, User receiver, String title, String contents) {
+    public static LetterBuilder of(User sender, User receiver, String title, String contents, String language) {
         return new LetterBuilder()
                 .sender(sender)
                 .receiver(receiver)
                 .title(title)
                 .contents(contents)
+                .language(language)
                 .sendedAt(LocalDateTime.now());
     }
 }

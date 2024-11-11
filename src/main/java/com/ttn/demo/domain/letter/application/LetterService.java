@@ -3,12 +3,14 @@ package com.ttn.demo.domain.letter.application;
 import com.ttn.demo.domain.letter.dao.LetterRepository;
 import com.ttn.demo.domain.letter.domain.Letter;
 import com.ttn.demo.domain.letter.dto.request.LetterCreateRequest;
+import com.ttn.demo.domain.letter.dto.response.LetterResponse;
 import com.ttn.demo.domain.letter.dto.response.LetterSummaryResponse;
 import com.ttn.demo.domain.letter.exception.LetterNotFoundException;
 import com.ttn.demo.domain.letter.exception.NoAvailableReceiverException;
 import com.ttn.demo.domain.letter.exception.SenderNotFoundException;
 import com.ttn.demo.domain.user.dao.UserRepository;
 import com.ttn.demo.domain.user.domain.User;
+import com.ttn.demo.domain.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +26,8 @@ public class LetterService {
     private final LetterRepository letterRepository;
     private final UserRepository userRepository;
 
-    public Letter createLetter(LetterCreateRequest letterRequestDTO) {
-        User sender = userRepository.findById(letterRequestDTO.getSenderId())
+    public void createLetter(Long id, LetterCreateRequest letterRequestDTO) {
+        User sender = userRepository.findById(id)
                 .orElseThrow(SenderNotFoundException::new);
 
         List<User> allUsers = userRepository.findAll().stream()
@@ -38,22 +40,42 @@ public class LetterService {
 
         User receiver = allUsers.get(new Random().nextInt(allUsers.size()));
 
-        Letter letter = Letter.of(sender, receiver, letterRequestDTO.getTitle(), letterRequestDTO.getContents()).build();
-        return letterRepository.save(letter);
+        Letter senderLetter = Letter.of(sender, receiver, letterRequestDTO.getTitle(), letterRequestDTO.getContents(), sender.getLanguage()).build();
+        letterRepository.save(senderLetter);
+
+        if(!sender.getLanguage().equals(receiver.getLanguage())) {
+            // To Do : title contents translation logic
+            Letter recieverLetter = Letter.of(sender, receiver, letterRequestDTO.getTitle(), letterRequestDTO.getContents(), receiver.getLanguage()).build();
+            letterRepository.save(recieverLetter);
+        }
     }
 
-    public Letter getLetterById(Long id) {
-        Letter letter = letterRepository.findById(id)
-                .orElseThrow(() -> new LetterNotFoundException(id));
+    public LetterResponse getLetterById(Long id, Long letterId) {
+        Letter letter = letterRepository.findById(letterId)
+                .orElseThrow(() -> new LetterNotFoundException(letterId));
 
-        letter.setOpenedAt(LocalDateTime.now());
-        letterRepository.save(letter);
-        return letter;
+        if(letter.getReceiver().getId().equals(id) && letter.getOpenedAt() != null) {
+            letter.setOpenedAt(LocalDateTime.now());
+            letterRepository.save(letter);
+        }
+        return LetterResponse.of(letter);
     }
 
-    public List<LetterSummaryResponse> getAllLetters() {
-        return letterRepository.findAll().stream()
-                .map(letter -> new LetterSummaryResponse(letter.getTitle(), letter.getSender().getNickname(), letter.getReceiver().getNickname()))
+    public List<LetterSummaryResponse> getAllSentLetters(Long id) {
+        String language = userRepository.findLanguageById(id)
+                .orElseThrow(UserNotFoundException::new);
+
+        return letterRepository.findBySenderIdAndLanguage(id, language).stream()
+                .map(LetterSummaryResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public List<LetterSummaryResponse> getAllReceivedLetters(Long id) {
+        String language = userRepository.findLanguageById(id)
+                .orElseThrow(UserNotFoundException::new);
+
+        return letterRepository.findByReceiverIdAndLanguage(id, language).stream()
+                .map(LetterSummaryResponse::of)
                 .collect(Collectors.toList());
     }
 }
