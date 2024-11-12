@@ -22,7 +22,6 @@ public class TokenApi {
 
     @PostMapping("/reissue")
     public ApiResponse<TokenResponse> accessTokenReissue(HttpServletRequest request, HttpServletResponse response) {
-        // 쿠키에서 리프레시 토큰 읽기
         String refreshToken = tokenReissueService.getRefreshTokenFromCookies(request);
         Tokens tokens = tokenReissueService.reissue(refreshToken);
         TokenResponse tokenResponseDto = JwtUtils.setJwtResponse(response,tokens);
