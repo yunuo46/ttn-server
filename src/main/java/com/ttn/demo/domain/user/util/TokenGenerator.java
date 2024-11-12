@@ -15,7 +15,7 @@ import java.util.Collection;
 
 @Component
 @RequiredArgsConstructor
-public class OauthTokenGenerator {
+public class TokenGenerator {
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
