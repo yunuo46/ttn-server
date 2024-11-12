@@ -13,7 +13,7 @@ public enum ErrorCode {
     // Letter
     LETTER_NOT_FOUND(HttpStatus.NOT_FOUND,"Letter not found"),
     RECEIVER_NOT_EXISTED(HttpStatus.NOT_FOUND,"No users available for receiver"),
-    SENDER_NOT_FOUND(HttpStatus.NOT_FOUND,"Sender not found"),;
+    SENDER_NOT_FOUND(HttpStatus.NOT_FOUND,"Sender not found");
 
     private final HttpStatus status;
     private final String message;
