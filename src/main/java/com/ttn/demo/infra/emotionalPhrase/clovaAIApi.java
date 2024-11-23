@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/clovaAI")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class clovaAIApi {
 
     private final clovaAIService clovaAIService;
 
-    @GetMapping("/api/emotional-message")
+    @GetMapping("/emotional-message")
     public String getEmotionalMessage() {
         return clovaAIService.getEmotionalMsg();
     }
