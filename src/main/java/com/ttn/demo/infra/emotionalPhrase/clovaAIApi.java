@@ -14,9 +14,9 @@ public class clovaAIApi {
 
     private final clovaAIService clovaAIService;
 
-    @GetMapping("/emotional-message")
-    public String getEmotionalMsg(@RequestParam String prompt) {
-        return clovaAIService.getEmotionalMsg(prompt);
+    @GetMapping("/api/emotional-message")
+    public String getEmotionalMessage() {
+        return clovaAIService.getEmotionalMsg();
     }
 
 }
