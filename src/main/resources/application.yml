@@ -1,27 +1,15 @@
-# MySQL
 spring:
+  profiles:
+    include: secret
   application:
-    name: server
+    name: demo
   datasource:
-    # url: jdbc:mysql://gaplog-db.ctgoi8ye6kr7.ap-northeast-2.rds.amazonaws.com:3306/reborn
-    url: jdbc:mysql://localhost:3306/ttn
-    # username: admin
-    username: root
-    # password: gaplog123!!
-    password: mydlcodb2004!
     driver-class-name: com.mysql.cj.jdbc.Driver
-
-
-# Jwt
-jwt:
-  secret-key: ZDFkY2IxOTEtMDEyMy00NTY3LTg5YWUtZmVkZWZmMGJiZWE5NTgzOTAyY2FkYjNkYjlkZDkxYjMwMzc3N2M2MQ==
-
-# API
-#clovaAI:
-#  api-url: https://clovastudio.stream.ntruss.com/testapp/v1/chat-completions/HCX-003
-#  api-gateway-key: yyzhxnC1sbH6kSqlcBHJYT2ufvf8nSn46oczktDS
-
-clovaAI:
-  api-url: "https://clovastudio.stream.ntruss.com/testapp/v1/chat-completions/HCX-003"
-  api-key: "NTA0MjU2MWZlZTcxNDJiY1MtPRPPl6IoGw8iK6m5LDXkTVvBQTxmn52AnnshBIGS"
-  api-gateway-key: "yyzhxnC1sbH6kSqlcBHJYT2ufvf8nSn46oczktDS"
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true

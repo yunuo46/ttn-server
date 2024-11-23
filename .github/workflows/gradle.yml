@@ -16,8 +16,8 @@ jobs:
       - name : Setup Environment
         run : |
           mkdir -p ./src/main/resources
-          touch ./src/main/resources/application-secret.properties
-          echo -e "\n${{ secrets.APPLICATION }}" >> ./src/main/resources/application-secret.properties
+          touch ./src/main/resources/application-secret.yml
+          echo -e "\n${{ secrets.APPLICATION }}" >> ./src/main/resources/application-secret.yml
 
       - name: Setup JDK 21
         uses: actions/setup-java@v4
