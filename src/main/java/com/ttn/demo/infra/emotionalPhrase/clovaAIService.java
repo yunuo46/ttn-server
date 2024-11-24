@@ -1,5 +1,9 @@
 package com.ttn.demo.infra.emotionalPhrase;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -21,14 +25,14 @@ public class clovaAIService {
     private String apiGatewayKey;
 
 
-    public String getEmotionalMsg() {
+    public String getEmotionalMsg() throws JSONException {
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("X-NCP-CLOVASTUDIO-API-KEY", apiKey);
         headers.add("X-NCP-APIGW-API-KEY", apiGatewayKey);
         headers.add("X-NCP-CLOVASTUDIO-REQUEST-ID", UUID.randomUUID().toString());
-        headers.add("Accept", "text/event-stream");
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
         String requestBody = "{"
                 + "\"messages\": [{\"role\": \"system\", \"content\": \""
@@ -50,7 +54,13 @@ public class clovaAIService {
         ResponseEntity<String> response = restTemplate.exchange(apiUrl, HttpMethod.POST, entity, String.class);
 
         if (response.getStatusCode() == HttpStatus.OK) {
-            return response.getBody();
+            JSONObject jsonResponse = new JSONObject(response.getBody());
+            String message = jsonResponse
+                    .getJSONObject("result") // result 객체에 접근
+                    .getJSONObject("message") // message 객체에 접근
+                    .getString("content"); // content 필드 값 추출
+
+            return message;
         } else {
             throw new RuntimeException("API 요청 실패: " + response.getStatusCode());
         }
