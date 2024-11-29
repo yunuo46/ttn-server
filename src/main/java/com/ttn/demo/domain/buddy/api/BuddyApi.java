@@ -1,6 +1,5 @@
 package com.ttn.demo.domain.buddy.api;
 
-import com.ttn.demo.domain.buddy.domain.Buddy;
 import com.ttn.demo.domain.buddy.application.BuddyService;
 import com.ttn.demo.domain.buddy.dto.request.BuddyCreateRequest;
 import com.ttn.demo.domain.buddy.dto.request.BuddyLetterRequest;
