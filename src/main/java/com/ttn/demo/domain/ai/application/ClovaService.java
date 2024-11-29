@@ -23,17 +23,12 @@ public class ClovaService {
     @Value("${clovaAI.api-url}")
     private String apiUrl;
 
-    @Value("${clovaAI.msg-api-key}")
+    @Value("${clovaAI.api-key}")
     private String apiKey;
 
-    @Value("${clovaAI.msg-api-gateway-key}")
+    @Value("${clovaAI.api-gateway-key}")
     private String apiGatewayKey;
 
-    @Value("${clovaAI.analyze-api=key}")
-    private String analyzeApiKey;
-
-    @Value("${clovaAI.analyze-gateway-key}")
-    private String analyzeApiGatewayKey;
 
     private final ClovaApiClient clovaApiClient;
     private final LetterService letterService;
@@ -45,7 +40,7 @@ public class ClovaService {
 
     public String getEmotionalMsg() throws JSONException {
         ObjectNode rootNode = getJsonNodes("사용자에게 전달할 감성적인 문구를 작성해주세요. 문구는 따뜻하고 희망적이며 긍정적인 느낌을 주어야 합니다. 한 문장으로 반환하여야 하며, 강조나 줄 바꿈 기호가 들어가서는 안됩니다.","");
-        JSONObject jsonResponse = sendReqeust(rootNode, apiKey, apiGatewayKey);
+        JSONObject jsonResponse = sendReqeust(rootNode);
 
         return jsonResponse
                 .getJSONObject("result")
@@ -60,7 +55,7 @@ public class ClovaService {
                 .collect(Collectors.joining(", "));
 
         ObjectNode rootNode = getJsonNodes("사용자가 입력한 텍스트를 분석하여 감정분석 json 자료를 제공하는 어시스턴트입니다. 감정은 세가지로 happy, sad, loneliness가 존재합니다. 각 감정에 대한 %를 json형태로 반환해주세요. 반드시 다른 응답은 들어가지 않아야 하고, json형태로만 반환해주면 됩니다.",stringLetters);
-        JSONObject jsonResponse = sendReqeust(rootNode, analyzeApiKey, analyzeApiGatewayKey);
+        JSONObject jsonResponse = sendReqeust(rootNode);
 
         String content = jsonResponse
                 .getJSONObject("result")
@@ -76,12 +71,12 @@ public class ClovaService {
         }
     }
 
-    private JSONObject sendReqeust(ObjectNode rootNode, String analyzeApiKey, String analyzeApiGatewayKey) {
+    private JSONObject sendReqeust(ObjectNode rootNode) {
         String requestBody =  rootNode.toString();
 
         Map<String, String> headers = new HashMap<>();
-        headers.put("X-NCP-CLOVASTUDIO-API-KEY", analyzeApiKey);
-        headers.put("X-NCP-APIGW-API-KEY", analyzeApiGatewayKey);
+        headers.put("X-NCP-CLOVASTUDIO-API-KEY", apiKey);
+        headers.put("X-NCP-APIGW-API-KEY", apiGatewayKey);
 
         String response = clovaApiClient.sendRequest(apiUrl, headers, requestBody);
         return new JSONObject(response);
