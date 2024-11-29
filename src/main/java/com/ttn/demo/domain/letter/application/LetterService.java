@@ -50,6 +50,17 @@ public class LetterService {
         }
     }
 
+    public void createLetter(User sender, User receiver, String title, String contents) {
+        Letter senderLetter = Letter.of(sender, receiver, title, contents, sender.getLanguage()).build();
+        letterRepository.save(senderLetter);
+
+        if (!sender.getLanguage().equals(receiver.getLanguage())) {
+            // To Do : title contents translation logic
+            Letter receiverLetter = Letter.of(sender, receiver, title, contents, receiver.getLanguage()).build();
+            letterRepository.save(receiverLetter);
+        }
+    }
+
     public LetterResponse getLetterById(Long id, Long letterId) {
         Letter letter = letterRepository.findById(letterId)
                 .orElseThrow(() -> new LetterNotFoundException(letterId));
