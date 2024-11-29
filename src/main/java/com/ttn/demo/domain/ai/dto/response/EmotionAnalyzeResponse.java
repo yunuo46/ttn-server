@@ -6,6 +6,8 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class clovaAIResponse {
-    private String contents;
+public class EmotionAnalyzeResponse {
+    private int happy;
+    private int sad;
+    private int loneliness;
 }
