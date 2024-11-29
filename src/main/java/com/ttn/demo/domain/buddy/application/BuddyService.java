@@ -33,9 +33,8 @@ public class BuddyService {
         User receiver = userRepository.findByNickname(buddyCreateRequest.getBuddyName())
                 .orElseThrow(() -> new IllegalArgumentException("Receiver not found"));
 
-        Buddy buddy = Buddy.of(sender, receiver)
-                .build();
-        buddyRepository.save(buddy);
+        buddyRepository.save(Buddy.of(sender, receiver).build());
+        buddyRepository.save(Buddy.of(receiver, sender).build());
     }
 
     public List<BuddyListResponse> getBuddyList(Long userId) {
