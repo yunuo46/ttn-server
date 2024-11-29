@@ -1,4 +1,4 @@
-package com.ttn.demo.infra.emotionalPhrase;
+package com.ttn.demo.domain.ai.dto.response;
 
 import lombok.*;
 
